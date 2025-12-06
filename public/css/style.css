@@ -1,0 +1,350 @@
+/* ================================
+   GLOBAL LAYOUT & RESET
+================================ */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Background FULL */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+}
+
+body {
+    background: #f4f6fa;
+    color: #333;
+    overflow-x: hidden;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ================================
+LOGIN PAGE
+================================ */
+/* LOGIN FULLSCREEN FIX */
+/* Background full */
+#loginPage {
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(135deg, #4a69bd, #6a89cc);
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;     /* horizontal center */
+    align-items: center;          /* vertical center */
+    padding: 20px;
+}
+
+/* Card login */
+.login-box {
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 35px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.login-card {
+    width: 400px;
+    max-width: 90%;
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.12);
+}
+
+.login-card h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.login-card input,
+.login-card select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+}
+
+.login-card button {
+    width: 100%;
+    padding: 12px;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* ================================
+   SIDEBAR
+================================ */
+.sidebar {
+    width: 260px;
+    background: white;
+    height: 100vh;
+    position: fixed;
+    padding: 25px 15px;
+    top: 0;
+    left: 0;
+    border-right: 1px solid #e0e0e0;
+}
+
+.sidebar h2 {
+    margin-bottom: 30px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.sidebar a {
+    display: block;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: #667eea;
+    color: white;
+}
+
+/* ================================
+   CONTENT AREA
+================================ */
+#adminDashboard,
+#studentDashboard,
+#kepalaDashboard {
+    margin-left: 260px;
+    padding: 25px;
+}
+
+.content-page {
+    margin-left: 260px;
+    padding: 25px;
+}
+
+/* ================================
+   CARDS
+================================ */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    text-align: center;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+/* ================================
+   TABLES
+================================ */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+thead {
+    background: #f0f0f0;
+    font-weight: bold;
+}
+
+/* ================================
+   BUTTONS
+================================ */
+.btn-primary {
+    background: #667eea;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-secondary {
+    background: #aaa;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-danger {
+    background: #e53935;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+/* ================================
+   SEARCH INPUT
+================================ */
+.search-box input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+}
+
+/* ================================
+   MODAL (FIXED)
+================================ */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal-content {
+    width: 420px;
+    max-width: 90%;
+    background: white;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.close-modal {
+    cursor: pointer;
+    font-size: 22px;
+    background: none;
+    border: none;
+}
+
+/* ================================
+   FORMS
+================================ */
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+}
+
+.error-message {
+    background: #ffdddd;
+    padding: 10px;
+    border-left: 4px solid #ff4444;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+.success-message {
+    background: #ddffdd;
+    padding: 10px;
+    border-left: 4px solid #44cc44;
+    margin-bottom: 10px;
+    border-radius: 8px;
+}
+
+/* ================================
+   BOOK LIST CARDS
+================================ */
+.book-card {
+    padding: 15px;
+    background: white;
+    border-radius: 14px;
+    margin-bottom: 15px;
+    border: 1px solid #eee;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+}
+
+.book-card button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* ================================
+   HEADER
+================================ */
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+@media (max-width: 900px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #adminDashboard,
+    #studentDashboard,
+    #kepalaDashboard,
+    .content-page {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .sidebar {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .login-card {
+        width: 95%;
+    }
+
+    .modal-content {
+        width: 95%;
+    }
+}
