@@ -15,17 +15,26 @@ class TransaksiController extends Controller
     }
 
     public function list(Request $request)
-    {
-        $query = Transaksi::with(['siswa', 'buku']);
+{
+    $query = Transaksi::with(['siswa', 'buku']);
 
-        if ($request->status) {
-            $query->where('status', $request->status);
-        }
-
-        $transaksi = $query->orderBy('tanggal_pinjam','desc')->get();
-
-        return response()->json($transaksi);
+    // Filter status
+    if ($request->status) {
+        $query->where('status', $request->status);
     }
+
+    // 🔍 Filter berdasarkan nama siswa
+    if ($request->search) {
+        $search = $request->search;
+        $query->whereHas('siswa', function($q) use ($search) {
+            $q->where('nama', 'LIKE', "%{$search}%");
+        });
+    }
+
+    $transaksi = $query->orderBy('tanggal_pinjam','desc')->get();
+
+    return response()->json($transaksi);
+}
 
     public function store(Request $request)
     {
@@ -64,7 +73,7 @@ class TransaksiController extends Controller
     $tanggalJatuhTempo = strtotime($transaksi->tanggal_jatuh_tempo);
     $sekarang = time();
 
-    $demoSatuanDetik = 60;   
+    $demoSatuanDetik = 10;   
     $dendaPerHari = 1000;    
     
     $selisihDetik = $sekarang - $tanggalJatuhTempo;

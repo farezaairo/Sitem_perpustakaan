@@ -83,6 +83,9 @@ Route::middleware(['auth', 'role:siswa'])->group(function () {
 
     Route::get('/catalog', [CatalogController::class, 'index'])
         ->name('catalog.index');
+        
+    Route::get('/catalog/filter', [CatalogController::class, 'filter'])
+        ->name('catalog.filter');
 
     Route::get('/riwayat', [RiwayatController::class, 'index'])
         ->name('riwayat.index');

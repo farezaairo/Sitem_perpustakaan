@@ -13,11 +13,30 @@ class BukuController extends Controller
     }
 
 
-    public function list()
-    {
-        $buku = Buku::all();
-        return response()->json($buku);
+   public function list(Request $request)
+{
+    $query = Buku::query();
+
+    $search = trim((string) $request->query('search', ''));
+    $kategori = trim((string) $request->query('kategori', ''));
+
+
+    if ($search !== '') {
+        $searchLower = mb_strtolower($search, 'UTF-8');
+        $query->whereRaw("LOWER(judul) LIKE ?", ["%{$searchLower}%"]);
     }
+
+    
+    if ($kategori !== '') {
+        $kategoriLower = mb_strtolower($kategori, 'UTF-8');
+        $query->whereRaw("LOWER(TRIM(kategori)) = ?", [$kategoriLower]);
+    }
+
+    $buku = $query->orderBy('judul')->get();
+
+    return response()->json($buku);
+}
+
 
     public function store(Request $request)
     {

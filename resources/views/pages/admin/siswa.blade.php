@@ -80,11 +80,14 @@
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function(){
+
     const studentModal = document.getElementById('studentModal');
     const studentForm = document.getElementById('studentForm');
     const studentsContainer = document.getElementById('studentsContainer');
+    const searchInput = document.getElementById('searchStudents');
 
     function openStudentModal() {
         studentModal.classList.remove('hidden');
@@ -112,22 +115,47 @@ document.addEventListener('DOMContentLoaded', function(){
 
     window.deleteStudent = function(id){
         if(confirm('Hapus siswa ini?')){
-            axios.delete(`/siswa/${id}`, {data: {_token: studentForm.elements._token.value}})
-            .then(()=>{ loadStudents(); alert('Siswa berhasil dihapus!'); })
-            .catch(err=>{ alert('Terjadi error saat menghapus siswa'); console.error(err); });
+            axios.delete(`/siswa/${id}`, {
+                data: { _token: studentForm.elements._token.value }
+            })
+            .then(()=>{
+                loadStudents();
+                alert('Siswa berhasil dihapus!');
+            })
+            .catch(err=>{
+                alert('Terjadi error saat menghapus siswa');
+                console.error(err);
+            });
         }
     }
 
     function loadStudents(){
-        studentsContainer.innerHTML = '<tr><td colspan="5" class="text-center py-4">Memuat...</td></tr>';
-        axios.get("{{ route('siswa.list') }}")
-        .then(res=>{
+        const search = searchInput.value.trim();
+
+        studentsContainer.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center py-4">Memuat...</td>
+            </tr>
+        `;
+
+        axios.get("{{ route('siswa.list') }}", {
+            params: { search: search }
+        })
+        .then(res => {
             studentsContainer.innerHTML = '';
+
             if(res.data.length === 0){
-                studentsContainer.innerHTML = '<tr><td colspan="5" class="text-center py-4 text-gray-500">Belum ada data siswa.</td></tr>';
+                studentsContainer.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-gray-500">
+                            Tidak ada data siswa.
+                        </td>
+                    </tr>
+                `;
                 return;
             }
-            const rows = res.data.map(s=>{
+
+            const rows = res.data.map(s => {
                 return `
                     <tr>
                         <td class="p-3">${s.nama}</td>
@@ -135,64 +163,76 @@ document.addEventListener('DOMContentLoaded', function(){
                         <td class="p-3">${s.email ?? '-'}</td>
                         <td class="p-3">${s.username}</td>
                         <td class="p-3 flex space-x-2">
-                            <button onclick="editStudent('${s.id}','${s.nama}','${s.kelas ?? ''}','${s.email ?? ''}','${s.username}')" class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">Edit</button>
-                            <button onclick="deleteStudent('${s.id}')" class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">Hapus</button>
+                            <button onclick="editStudent('${s.id_siswa}','${s.nama}','${s.kelas ?? ''}','${s.email ?? ''}','${s.username}')"
+                                class="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">Edit</button>
+                            <button onclick="deleteStudent('${s.id_siswa}')"
+                                class="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition">Hapus</button>
                         </td>
                     </tr>
                 `;
             }).join('');
+
             studentsContainer.innerHTML = rows;
         })
-        .catch(err=>{
-            studentsContainer.innerHTML = '<tr><td colspan="5" class="text-center text-red-500 py-4">Gagal memuat data siswa.</td></tr>';
+        .catch(err => {
+            studentsContainer.innerHTML = `
+                <tr>
+                    <td colspan="5" class="text-center text-red-500 py-4">
+                        Gagal memuat data siswa.
+                    </td>
+                </tr>
+            `;
             console.error(err);
         });
     }
 
     studentForm.addEventListener('submit', function(e){
-    e.preventDefault();
+        e.preventDefault();
 
-    axios.defaults.headers.common['Accept'] = 'application/json';
-    axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').content;
+        axios.defaults.headers.common['Accept'] = 'application/json';
+        axios.defaults.headers.common['X-CSRF-TOKEN'] =
+            document.querySelector('meta[name="csrf-token"]').content;
 
-    const id = document.getElementById('studentId').value;
-    const url = id ? `/siswa/${id}` : `/siswa`;
+        const id = document.getElementById('studentId').value;
+        const url = id ? `/siswa/${id}` : `/siswa`;
 
-    const payload = {
-        nama: document.getElementById('studentNama').value.trim(),
-        kelas: document.getElementById('studentKelas').value.trim(),
-        email: document.getElementById('studentEmail').value.trim(),
-        username: document.getElementById('studentUsername').value.trim(),
-        password: document.getElementById('studentPassword').value,
-    };
+        const payload = {
+            nama: document.getElementById('studentNama').value.trim(),
+            kelas: document.getElementById('studentKelas').value.trim(),
+            email: document.getElementById('studentEmail').value.trim(),
+            username: document.getElementById('studentUsername').value.trim(),
+            password: document.getElementById('studentPassword').value,
+        };
 
-    // Jika update, override method
-    if(id){
-        payload._method = 'PUT';
-    }
-
-    axios.post(url, payload)
-    .then(res=>{
-        closeStudentModal();
-        loadStudents();
-        alert('Siswa berhasil disimpan!');
-    })
-    .catch(error=>{
-        if(error.response && error.response.status === 422){
-            const errs = error.response.data.errors;
-            let msg = "Validasi gagal:\n\n";
-            Object.keys(errs).forEach(key=>{
-                msg += `• ${key}: ${errs[key].join(', ')}\n`;
-            });
-            alert(msg); 
-            console.error("VALIDATION ERRORS", errs);
-            return;
+        if(id){
+            payload._method = 'PUT';
         }
-        alert("Terjadi error lain. Cek console.");
-        console.error(error);
-    });
-});
 
+        axios.post(url, payload)
+        .then(() => {
+            closeStudentModal();
+            loadStudents();
+            alert('Siswa berhasil disimpan!');
+        })
+        .catch(error => {
+            if(error.response && error.response.status === 422){
+                const errs = error.response.data.errors;
+                let msg = "Validasi gagal:\n\n";
+                Object.keys(errs).forEach(key=>{
+                    msg += `• ${key}: ${errs[key].join(', ')}\n`;
+                });
+                alert(msg);
+                return;
+            }
+            alert("Terjadi error lain. Lihat console.");
+            console.error(error);
+        });
+    });
+
+   
+    searchInput.addEventListener('input', function(){
+        loadStudents();
+    });
 
     document.getElementById('addStudentBtn').addEventListener('click', openStudentModal);
     document.getElementById('btnCancel').addEventListener('click', closeStudentModal);
@@ -201,3 +241,4 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 @endpush
+
